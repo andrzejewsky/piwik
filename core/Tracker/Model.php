@@ -404,22 +404,9 @@ class Model
 
         $visitRows = $this->getDb()->fetchAll($sql, $bindSql);
 
-        return $this->getMaxVisitor($visitRows);
+        return array_pop($visitRows);
     }
-
-    private function getMaxVisitor($visitRows)
-    {
-        $max = [];
-
-        foreach ($visitRows as $row) {
-            if (count($max) === 0 || ($row['idvisit'] >= $max['idvisit'])) {
-                $max = $row;
-            }
-        }
-
-        return $max;
-    }
-
+    
     /**
      * Returns true if the site doesn't have log data.
      *
