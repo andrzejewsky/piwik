@@ -400,12 +400,25 @@ class Model
 
     private function fetchVisitor($select, $from, $where, $bindSql)
     {
-        $sql = "$select $from WHERE " . $where . "
-                ORDER BY visit_last_action_time";
-        
+        $sql = "$select $from WHERE " . $where;
+
         $visitRows = $this->getDb()->fetchAll($sql, $bindSql);
 
-        return array_pop($visitRows);
+        return $this->getMaxVisitor($visitRows);
+    }
+
+    private function getMaxVisitor($visitRows)
+    {
+        $max = array();
+
+        foreach ($visitRows as $row) {
+            if (count($max) === 0 ||
+                (strtotime($row['visit_last_action_time']) >= strtotime($max['visit_last_action_time']))) {
+                $max = $row;
+            }
+        }
+
+        return $max;
     }
 
     /**
